@@ -26,13 +26,14 @@ function New-RSRandomPassword {
         # Returns a random password that are 20 characters long and contains 4 special character.
 
         .NOTES
-        Author:     Robin Stolpe
-        Mail:       robin@stolpe.io
-        Website:	https://stolpe.io
-        GitHub:		https://github.com/rstolpe
-        Twitter:	https://twitter.com/rstolpes
-        PSGallery:	https://www.powershellgallery.com/profiles/rstolpe
-        NuGet: 		https://www.nuget.org/profiles/rstolpe
+        Author:         Robin Widmark
+        Mail:           robin@widmark.dev
+        Website/Blog:   https://widmark.dev
+        X:              https://x.com/widmark_robin
+        Mastodon:       https://mastodon.social/@rwidmark
+		YouTube:		https://www.youtube.com/@rwidmark
+        Linkedin:       https://www.linkedin.com/in/rwidmark/
+        GitHub:         https://github.com/rwidmark
     #>
 
     [CmdletBinding()]
