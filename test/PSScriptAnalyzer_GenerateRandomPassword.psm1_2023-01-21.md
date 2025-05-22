@@ -6,7 +6,7 @@ Extent               : New-RSRandomPassword
 RuleName             : PSUseShouldProcessForStateChangingFunctions
 Severity             : Warning
 ScriptName           : GenerateRandomPassword.psm1
-ScriptPath           : /Users/rstolpe/Dev/GitHub/GenerateRandomPassword/GenerateRandomPassword/GenerateRandomPassword.psm1
+ScriptPath           : /Users/rwidmark/Dev/GitHub/GenerateRandomPassword/GenerateRandomPassword/GenerateRandomPassword.psm1
 RuleSuppressionID    : 
 SuggestedCorrections : 
 IsSuppressed         : False
