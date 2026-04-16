@@ -23,7 +23,7 @@
     SOFTWARE.
 #>
 $script:AlphaNumericCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'.ToCharArray()
-$script:PasswordSpecialCharacters = '!@#$%^&.,_*()=+*?-'.ToCharArray()
+$script:PasswordSpecialCharacters = '!@#$%^&.,_*()=+?-'.ToCharArray()
 
 function Get-RSRandomIndex {
     [CmdletBinding()]
