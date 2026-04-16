@@ -1,4 +1,4 @@
-﻿<#
+<#
     MIT License
 
     Copyright (C) 2025 Robin Widmark.
@@ -39,7 +39,7 @@
     ModuleVersion         = '1.0.2'
 
     # Supported PSEditions
-    # CompatiblePSEditions = @()
+    CompatiblePSEditions   = @('Desktop', 'Core')
 
     # ID used to uniquely identify this module
     GUID                  = 'f9318fbc-e3dd-45de-b12b-4b3224a107d7'
@@ -93,13 +93,13 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport     = "New-RSRandomPassword"
+    FunctionsToExport     = @('New-RSRandomPassword')
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport       = @()
 
     # Variables to export from this module
-    VariablesToExport     = '*'
+    VariablesToExport     = @()
 
     # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
     AliasesToExport       = @()

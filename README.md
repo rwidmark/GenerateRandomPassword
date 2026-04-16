@@ -7,6 +7,7 @@
 This module generates and returns a random password that contains lower and upper letters, numbers and special characters.  
 It can either generate one with the default options that are 12 characters long and contains 3 special characters,  
 or you can decide how long the password should be and how many special characters it should contain.  
+The module is compatible with Windows PowerShell and PowerShell on macOS.  
 I have added the result from PSScriptAnalyzer in [test folder](https://github.com/rwidmark/GenerateRandomPassword/tree/main/test)
 
 # Links
@@ -37,8 +38,16 @@ Install-Module -Name GenerateRandomPassword -Scope AllUsers -Force
 ````
 New-RSRandomPassword
 ````
-Returns a random password that are 12 characters long and contains 1 special character.
+Returns a random password that is 12 characters long and contains 3 special characters.
 ````
 New-RSRandomPassword -Length 20 -SpecialCharacters 4
 ````
-Returns a random password that are 20 characters long and contains 4 special character.
+Returns a random password that is 20 characters long and contains 4 special characters.
+````
+New-RSRandomPassword -Verbose
+````
+Returns a random password and writes verbose details about the generated composition.
+````
+New-RSRandomPassword -WhatIf
+````
+Shows what would happen without generating a password.

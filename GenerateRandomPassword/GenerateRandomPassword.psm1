@@ -1,27 +1,30 @@
-﻿<#
-MIT License
+$script:AlphaNumericCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'.ToCharArray()
+$script:PasswordSpecialCharacters = '!@#$%^&.,_*()=+-?'.ToCharArray()
 
-Copyright (C) 2025 Robin Widmark.
-<https://widmark.dev>
+function Get-RSRandomIndex {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [System.Security.Cryptography.RandomNumberGenerator]$RandomNumberGenerator,
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+        [Parameter(Mandatory = $true)]
+        [byte[]]$Buffer,
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+        [Parameter(Mandatory = $true)]
+        [ValidateRange(1, [int]::MaxValue)]
+        [int]$Maximum
+    )
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-#>
+    $limit = [uint32]::MaxValue - ([uint32]::MaxValue % [uint32]$Maximum)
+
+    do {
+        $RandomNumberGenerator.GetBytes($Buffer)
+        $randomValue = [System.BitConverter]::ToUInt32($Buffer, 0)
+    } while ($randomValue -ge $limit)
+
+    return [int]($randomValue % [uint32]$Maximum)
+}
+
 function New-RSRandomPassword {
     <#
         .SYNOPSIS
@@ -37,16 +40,25 @@ function New-RSRandomPassword {
         Default is 12, shortest length is 6 and max length is 30.
 
         .PARAMETER SpecialCharacters
-        Specify how many special characters your password will has in it.
+        Specify how many special characters your password will have in it.
         Default is 3, shortest length is 1 and max length is 15.
+        The value must also be smaller than Length.
 
         .EXAMPLE
         New-RSRandomPassword
-        # Returns a random password that are 12 characters long and contains 1 special character.
+        # Returns a random password that is 12 characters long and contains 3 special characters.
 
         .EXAMPLE
         New-RSRandomPassword -Length 20 -SpecialCharacters 4
-        # Returns a random password that are 20 characters long and contains 4 special character.
+        # Returns a random password that is 20 characters long and contains 4 special characters.
+
+        .EXAMPLE
+        New-RSRandomPassword -Verbose
+        # Returns a random password and writes verbose details about the generated composition.
+
+        .EXAMPLE
+        New-RSRandomPassword -WhatIf
+        # Shows what would happen without generating a password.
 
         .NOTES
         Author:         Robin Widmark
@@ -54,38 +66,75 @@ function New-RSRandomPassword {
         Website/Blog:   https://widmark.dev
         X:              https://x.com/widmark_robin
         Mastodon:       https://mastodon.social/@rwidmark
-		YouTube:		https://www.youtube.com/@rwidmark
+        YouTube:        https://www.youtube.com/@rwidmark
         Linkedin:       https://www.linkedin.com/in/rwidmark/
         GitHub:         https://github.com/rwidmark
     #>
 
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
+    [OutputType([string])]
     param(
         [ValidateRange(6, 30)]
-        [Parameter(Mandatory = $false, HelpMessage = "Specify how many character the password should contain")]
+        [Parameter(Mandatory = $false, HelpMessage = 'Specify the total number of characters to include in the password.')]
         [int]$Length = 12,
+
         [ValidateRange(1, 15)]
-        [Parameter(Mandatory = $false, HelpMessage = "Specify how many special characters the password should conatin")]
+        [Parameter(Mandatory = $false, HelpMessage = 'Specify how many special characters to include in the password.')]
         [int]$SpecialCharacters = 3
     )
 
-    $Character = 'abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890'
-    $RandomCharacter = 1..$($Length - $SpecialCharacters) | ForEach-Object {
-        Get-Random -Maximum $Character.length
+    if ($SpecialCharacters -ge $Length) {
+        $message = 'SpecialCharacters must be smaller than Length so the password contains at least one letter or number.'
+        $exception = [System.ArgumentOutOfRangeException]::new('SpecialCharacters', $SpecialCharacters, $message)
+        $errorRecord = [System.Management.Automation.ErrorRecord]::new(
+            $exception,
+            'SpecialCharactersMustBeSmallerThanLength',
+            [System.Management.Automation.ErrorCategory]::InvalidData,
+            $SpecialCharacters
+        )
+
+        $PSCmdlet.ThrowTerminatingError($errorRecord)
     }
 
-
-    $SpecialCharacter = '!@#$%^&.,_*()=+*?-'
-    $RandomSpecialC = 1..$SpecialCharacters | ForEach-Object {
-        Get-Random -Maximum $SpecialCharacter.length
+    $action = "Generate a random password with length $Length and $SpecialCharacters special characters"
+    if (-not $PSCmdlet.ShouldProcess('Random password output', $action)) {
+        return
     }
 
-    $private:ofs = ""
-    $inputString = [String]$Character[$RandomCharacter]
-    $inputString += [String]$SpecialCharacter[$RandomSpecialC]
+    Write-Verbose "Generating a password with $Length characters and $SpecialCharacters special characters."
 
-    $characterArray = $inputString.ToCharArray()
-    $scrambledStringArray = $characterArray | Get-Random -Count $characterArray.Length
-    $outputString = -join $scrambledStringArray
-    return $outputString
+    $passwordCharacters = [char[]]::new($Length)
+    $alphaNumericCount = $Length - $SpecialCharacters
+    $randomNumberGenerator = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+    $randomBuffer = [byte[]]::new(4)
+
+    try {
+        for ($index = 0; $index -lt $alphaNumericCount; $index++) {
+            $passwordCharacters[$index] = $script:AlphaNumericCharacters[
+                (Get-RSRandomIndex -RandomNumberGenerator $randomNumberGenerator -Buffer $randomBuffer -Maximum $script:AlphaNumericCharacters.Length)
+            ]
+        }
+
+        for ($index = $alphaNumericCount; $index -lt $Length; $index++) {
+            $passwordCharacters[$index] = $script:PasswordSpecialCharacters[
+                (Get-RSRandomIndex -RandomNumberGenerator $randomNumberGenerator -Buffer $randomBuffer -Maximum $script:PasswordSpecialCharacters.Length)
+            ]
+        }
+
+        # Shuffle the generated characters in place to avoid extra arrays and pipeline overhead.
+        for ($index = $passwordCharacters.Length - 1; $index -gt 0; $index--) {
+            $swapIndex = Get-RSRandomIndex -RandomNumberGenerator $randomNumberGenerator -Buffer $randomBuffer -Maximum ($index + 1)
+
+            if ($swapIndex -ne $index) {
+                $character = $passwordCharacters[$index]
+                $passwordCharacters[$index] = $passwordCharacters[$swapIndex]
+                $passwordCharacters[$swapIndex] = $character
+            }
+        }
+    }
+    finally {
+        $randomNumberGenerator.Dispose()
+    }
+
+    return [string]::new($passwordCharacters)
 }

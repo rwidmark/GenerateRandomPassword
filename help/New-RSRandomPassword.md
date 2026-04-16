@@ -1,4 +1,3 @@
-﻿
 NAME
     New-RSRandomPassword
     
@@ -7,7 +6,7 @@ SYNOPSIS
     
     
 SYNTAX
-    New-RSRandomPassword [[-Length] <Int32>] [[-SpecialCharacters] <Int32>] [<CommonParameters>]
+    New-RSRandomPassword [[-Length] <Int32>] [[-SpecialCharacters] <Int32>] [-WhatIf] [-Confirm] [<CommonParameters>]
     
     
 DESCRIPTION
@@ -28,8 +27,9 @@ PARAMETERS
         Accept wildcard characters?  false
         
     -SpecialCharacters <Int32>
-        Specify how many special characters your password will has in it.
+        Specify how many special characters your password will have in it.
         Default is 3, shortest length is 1 and max length is 15.
+        The value must also be smaller than Length.
         
         Required?                    false
         Position?                    2
@@ -40,12 +40,14 @@ PARAMETERS
     <CommonParameters>
         This cmdlet supports the common parameters: Verbose, Debug,
         ErrorAction, ErrorVariable, WarningAction, WarningVariable,
-        OutBuffer, PipelineVariable, and OutVariable. For more information, see
+        InformationAction, InformationVariable, OutBuffer,
+        PipelineVariable, OutVariable, WhatIf, and Confirm. For more information, see
         about_CommonParameters (https://go.microsoft.com/fwlink/?LinkID=113216). 
     
 INPUTS
     
 OUTPUTS
+    string
     
 NOTES
     
@@ -55,14 +57,14 @@ NOTES
         Website/Blog:   https://widmark.dev
         X:              https://x.com/widmark_robin
         Mastodon:       https://mastodon.social/@rwidmark
-		YouTube:		https://www.youtube.com/@rwidmark
+        YouTube:        https://www.youtube.com/@rwidmark
         Linkedin:       https://www.linkedin.com/in/rwidmark/
         GitHub:         https://github.com/rwidmark
     
     -------------------------- EXAMPLE 1 --------------------------
     
     PS > New-RSRandomPassword
-    # Returns a random password that are 12 characters long and contains 1 special character.
+    # Returns a random password that is 12 characters long and contains 3 special characters.
     
     
     
@@ -72,8 +74,27 @@ NOTES
     -------------------------- EXAMPLE 2 --------------------------
     
     PS > New-RSRandomPassword -Length 20 -SpecialCharacters 4
-    # Returns a random password that are 20 characters long and contains 4 special character.
+    # Returns a random password that is 20 characters long and contains 4 special characters.
     
+    
+    
+    
+    
+    
+    -------------------------- EXAMPLE 3 --------------------------
+    
+    PS > New-RSRandomPassword -Verbose
+    # Returns a random password and writes verbose details about the generated composition.
+    
+    
+    
+    
+    
+    
+    -------------------------- EXAMPLE 4 --------------------------
+    
+    PS > New-RSRandomPassword -WhatIf
+    # Shows what would happen without generating a password.
     
     
     
@@ -81,5 +102,4 @@ NOTES
     
     
 RELATED LINKS
-
 
