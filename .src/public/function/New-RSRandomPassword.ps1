@@ -64,7 +64,7 @@ function New-RSRandomPassword {
         Default is 12, shortest length is 6 and max length is 30.
 
         .PARAMETER SpecialCharacters
-        Specify how many special characters your password will has in it.
+        Specify how many special characters your password will have in it.
         Default is 3, shortest length is 1 and max length is 15.
         The value must also be smaller than Length.
 

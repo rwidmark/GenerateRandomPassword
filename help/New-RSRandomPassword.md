@@ -27,7 +27,7 @@ PARAMETERS
         Accept wildcard characters?  false
         
     -SpecialCharacters <Int32>
-        Specify how many special characters your password will has in it.
+        Specify how many special characters your password will have in it.
         Default is 3, shortest length is 1 and max length is 15.
         The value must also be smaller than Length.
         
@@ -47,7 +47,7 @@ PARAMETERS
 INPUTS
     
 OUTPUTS
-    String
+    string
     
 NOTES
     
