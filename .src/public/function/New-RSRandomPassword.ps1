@@ -22,7 +22,7 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 #>
-$script:AlphaNumericCharacters = 'abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890'.ToCharArray()
+$script:AlphaNumericCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'.ToCharArray()
 $script:PasswordSpecialCharacters = '!@#$%^&.,_*()=+*?-'.ToCharArray()
 
 function Get-RSRandomIndex {

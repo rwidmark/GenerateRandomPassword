@@ -1,4 +1,4 @@
-$script:AlphaNumericCharacters = 'abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890'.ToCharArray()
+$script:AlphaNumericCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'.ToCharArray()
 $script:PasswordSpecialCharacters = '!@#$%^&.,_*()=+*?-'.ToCharArray()
 
 function Get-RSRandomIndex {
